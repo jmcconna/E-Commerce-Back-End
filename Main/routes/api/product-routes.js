@@ -30,8 +30,8 @@ router.get('/:id', (req, res) => {
     include: [
       Category,
       {
-        model: Tag,
-        through: ProductTag,
+        model: Tag, //include tags
+        through: ProductTag, //as defined by the many-to-many ProductTag relationship
       },
     ],
   })
@@ -54,7 +54,7 @@ router.post('/', (req, res) => {
   */
   Product.create(req.body)
     .then((product) => {
-      // if there's product tags, we need to create pairings to bulk create in the ProductTag model
+      // if there are product tags, create pairings to bulk create in the ProductTag model
       if (req.body.tagIds && req.body.tagIds.length) {
         const productTagIdArr = req.body.tagIds.map((tag_id) => {
           return {
@@ -74,7 +74,7 @@ router.post('/', (req, res) => {
     });
 });
 
-// update product
+// update a product by its id
 router.put('/:id', (req, res) => {
   // update product data
   Product.update(req.body, {
@@ -116,6 +116,7 @@ router.put('/:id', (req, res) => {
     });
 });
 
+//delete a product by its id
 router.delete('/:id', (req, res) => {
   Product.destroy({
     where: {
